@@ -1,17 +1,14 @@
-
 import sys
-sys.path.append('/media/cmore/Project/t/tensorflow/models/research')
-sys.path.append('/media/cmore/Project/t/tensorflow/models/research/slim')
+sys.path.append('/cmore/tensorflow/models/research')
+sys.path.append('/cmore//tensorflow/models/research/slim')
 from object_detection.utils import label_map_util
 import tensorflow as tf
 import numpy as np
 import cv2
-import os
 
 
 class Detector:
     def __init__(self, model_path, labels_path, H, W, memory=1, minimum_confidence=0.1, bgr=False):
-        # os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu)
         num_classes = open(labels_path).read().count('item {')
         self.minimum_confidence = minimum_confidence
         labelMap = label_map_util.load_labelmap(labels_path)
@@ -27,27 +24,21 @@ class Detector:
 
         model = tf.Graph()
         with model.as_default():
-            # initialize the graph definition
             graphDef = tf.GraphDef()
 
-            # load the graph from disk
             with tf.gfile.GFile(model_path, "rb") as f:
                 serializedGraph = f.read()
                 graphDef.ParseFromString(serializedGraph)
                 tf.import_graph_def(graphDef, name="")
 
-            # load the class labels from disk
             if memory > 0:
                 self.sess = tf.Session(graph=model, config=config)
             else:
                 self.sess = tf.Session(graph=model)
-            # grab a reference to the input image tensor and the boxes
-            # tensor
+
             self.imageTensor = model.get_tensor_by_name("image_tensor:0")
             self.boxesTensor = model.get_tensor_by_name("detection_boxes:0")
 
-            # for each bounding box we would like to know the score
-            # (i.e., probability) and class label
             self.scoresTensor = model.get_tensor_by_name("detection_scores:0")
             self.classesTensor = model.get_tensor_by_name("detection_classes:0")
             self.numDetections = model.get_tensor_by_name("num_detections:0")
@@ -56,11 +47,9 @@ class Detector:
         if self.bgr:
             img_color = cv2.cvtColor(img_color.copy(), cv2.COLOR_BGR2RGB)
         img_tensor = np.expand_dims(img_color, axis=0)
-        # print("TENSOR SHAPE", img_tensor.shape)
 
         (boxes, scores, labels, N) = self.sess.run([self.boxesTensor, self.scoresTensor, self.classesTensor, self.numDetections],
                                                   feed_dict={self.imageTensor: img_tensor})
-        # print(multiclass_non_max_suppression(boxes, scores, 0.5, 0.6, 50))
         boxes = np.squeeze(boxes)
         scores = np.squeeze(scores)
         labels = np.squeeze(labels)
@@ -82,12 +71,10 @@ class Detector:
             img_tensor = np.expand_dims(img_color, axis=0)
             images_batch.append(img_tensor)
         images_batch_tensor = np.concatenate(images_batch, axis=0)
-        # print("TENSOR SHAPE", images_batch_tensor.shape)
 
         (boxes, scores, labels, N) = self.sess.run([self.boxesTensor, self.scoresTensor, self.classesTensor, self.numDetections],
                                                   feed_dict={self.imageTensor: images_batch_tensor})
 
-        # return boxes, scores, labels, N
         labels_boxes_batch = []
         for boxs, scors, labls in zip(boxes, scores, labels):
             boxez = []

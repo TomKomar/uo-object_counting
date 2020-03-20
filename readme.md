@@ -1,5 +1,6 @@
 # uo-object_counting API
-based on python-flask-docker-sklearn-template (check github)
+Simple flask + tensorflow API for counting objects in online images.
+based on python-flask-docker-sklearn-template \
 https://github.com/Soluto/python-flask-sklearn-docker-template
 
 #### Build

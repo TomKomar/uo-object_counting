@@ -22,3 +22,6 @@ call API\
 
 respose will be e.g.\
 `{car: {count: 4}, bus: {count: 1}, van: {count: 1}, cyclist: {count: 1}, person: {count: 4}, total: {count: 11}}`\
+
+#### Object Detection Model
+The model included in `/app/` folder is FRCNN 640x480 trained on PitchIn Rebuscov dataset (collection of ~10K traffic CCTV images) \

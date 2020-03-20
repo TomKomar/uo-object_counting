@@ -1,0 +1,24 @@
+FROM tensorflow/tensorflow:1.13.1-py3
+
+RUN apt-get update \
+	&& apt-get install -y curl zip unzip python3 python3-dev python3-pip python3-tk protobuf-compiler python3-lxml libglib2.0-0 git\
+    && pip3 install Cython
+# COPY ./tensorflow ./tensorflow
+RUN git clone https://github.com/tensorflow/models.git /tensorflow/models
+
+WORKDIR /app
+COPY ./app /app/
+
+RUN chmod 777 /app/latest_protobuf.sh
+RUN /app/latest_protobuf.sh
+
+RUN cd /tensorflow/models/research \
+    && protoc object_detection/protos/*.proto --python_out=. \
+    && python3 setup.py sdist \
+   && (cd slim && python3 setup.py sdist)
+
+RUN pip3 install -r /app/requirements-no_gpu.txt
+ENV PYTHONPATH=$PYTHONPATH:/tensorflow/models:/tensorflow/models/slim
+ENV ENVIRONMENT production
+
+ENTRYPOINT python3 ./main.py

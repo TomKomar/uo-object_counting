@@ -5,12 +5,13 @@ https://github.com/Soluto/python-flask-sklearn-docker-template
 
 #### Build
 build for use with or without GPU \
-`docker build . -f Dockerfile-with_gpu -t tflsk_gpu` 
+`docker build . -f Dockerfile-with_gpu -t tflsk_gpu`  \
 `docker build . -f Dockerfile-without_gpu -t tflsk_nogpu`
 
 run with environmental variable `GPU=1` even if there's no GPU in use (i.e. you're starting tflsk_nogpu)\
 this way you won't trigger any changes to defaults (which would cause an error if there's no GPU)\
-`docker run -d --rm -e PYTHONPATH='/tensorflow/models/research:/tensorflow/models/research/slim' -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-3.pb' -e LABELS='rebuscov-classes-3.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_nogpu`
+detached: `docker run -d --rm -e PYTHONPATH='/tensorflow/models/research:/tensorflow/models/research/slim' -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-3.pb' -e LABELS='rebuscov-classes-3.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_nogpu`\
+interactive: `docker run -it --rm -e PYTHONPATH='/tensorflow/models/research:/tensorflow/models/research/slim' -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-3.pb' -e LABELS='rebuscov-classes-3.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_nogpu bash`
 
 running with GPU requires nvidia-docker rather than regular docker (setting runtime depends on nvidia-docker version, either `"--runtime=nvidia"` or `"--gpus all"`)
 

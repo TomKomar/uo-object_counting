@@ -11,8 +11,8 @@ model_path = os.environ['MODEL']
 labels_path = os.environ['LABELS']
 gpu_memory = float(os.environ['GPU_MEMORY'])
 min_conf = float(os.environ['MIN_CONF'])  # minimum confidence score
-W = float(os.environ['W'])
-H = float(os.environ['H'])
+W = int(os.environ['W'])
+H = int(os.environ['H'])
 
 app = Flask(__name__)
 detector = Detector(model_path=model_path, labels_path=labels_path, memory=gpu_memory, H=H, W=W, minimum_confidence=min_conf)
@@ -38,8 +38,8 @@ def get_prediction():
         else:
             counts[det[0]] = {'count': 1}
     counts['total'] = {'count': len(detections)}
-
-    return str(counts)
+    resp = str(counts).replace("'", '"')
+    return str(resp)
 
 if __name__ == '__main__':
     if os.environ['ENVIRONMENT'] == 'production':

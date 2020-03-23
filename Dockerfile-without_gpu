@@ -21,4 +21,9 @@ RUN pip3 install -r /app/requirements-no_gpu.txt
 ENV PYTHONPATH=$PYTHONPATH:/tensorflow/models:/tensorflow/models/slim
 ENV ENVIRONMENT production
 
-ENTRYPOINT python3 ./main.py
+RUN apt-get install -y supervisor # Installing supervisord
+ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+ENTRYPOINT ["/usr/bin/supervisord"]
+
+# ENTRYPOINT python3 ./main.py

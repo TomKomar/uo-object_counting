@@ -1,11 +1,14 @@
 # based on python-flask-docker-sklearn-template
-import os
+from detector import Detector
 from flask import Flask
 from flask import request
-from detector import Detector
-import cv2
 import urllib.request
 import numpy as np
+import datetime
+import sqlite3
+import json
+import cv2
+import os
 
 model_path = os.environ['MODEL']
 labels_path = os.environ['LABELS']
@@ -15,11 +18,37 @@ W = int(os.environ['W'])
 H = int(os.environ['H'])
 
 app = Flask(__name__)
+db = "cctv_counts.db"
 detector = Detector(model_path=model_path, labels_path=labels_path, memory=gpu_memory, H=H, W=W, minimum_confidence=min_conf)
 
 @app.route('/isAlive')
 def index():
     return "true"
+
+
+@app.route('/get_counts', methods=['GET'])
+def getCounts():
+    camera = request.args.get('camera')
+    minutes = request.args.get('minutes')
+    con = sqlite3.connect(db)
+    c = con.cursor()
+    dt = datetime.datetime.now() - datetime.timedelta(minutes=int(minutes))
+
+    if camera == '0':
+        c.execute("SELECT camera, url, ts, vehs, cyc, ped FROM cctv_counts WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
+        recs = c.fetchall()
+    else:
+        c.execute("SELECT camera, url, ts, vehs, cyc, ped FROM cctv_counts WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
+        recs = c.fetchall()
+    c.close()
+    if con:
+        con.close()
+
+    dicts = [{'camera': cam, 'url': url, 'ts': ts, 'veh': veh, 'cyc': cyc, 'ped': ped} for
+             cam, url, ts, veh, cyc, ped in recs]
+
+    return str(dicts).replace("'", '"')
+
 
 @app.route('/detection/api/v1.0/count_vehicles', methods=['GET'])
 def get_prediction():
@@ -37,12 +66,12 @@ def get_prediction():
             counts[det[0]]['count'] += 1
         else:
             counts[det[0]] = {'count': 1}
-    counts['total'] = {'count': len(detections)}
+
     resp = str(counts).replace("'", '"')
     return str(resp)
 
 if __name__ == '__main__':
     if os.environ['ENVIRONMENT'] == 'production':
-        app.run(port=80,host='0.0.0.0')
+        app.run(port=80, host='0.0.0.0')
     if os.environ['ENVIRONMENT'] == 'local':
-        app.run(port=5000,host='0.0.0.0')
+        app.run(port=5000, host='0.0.0.0')

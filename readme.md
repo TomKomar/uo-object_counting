@@ -1,6 +1,6 @@
 # uo-object_counting API
 based on python-flask-docker-sklearn-template \
-https://github.com/Soluto/python-flask-sklearn-docker-template\
+https://github.com/Soluto/python-flask-sklearn-docker-template
 \
 Simple `websockets + flask + tensorflow + sqlite` API providing counts of road users in still images available via UTMC public API https://www.netraveldata.co.uk/?page_id=9\
 Organised and sorted images can be accessed at Urban Observatory UTMC CCTV portal https://api.newcastle.urbanobservatory.ac.uk/camera/
@@ -54,7 +54,8 @@ response will be e.g.\
 response: \
 `[{"counts": "{}", "camera": "NC_B1318B1:V01", "url": "https://file.newcastle.urbanobservatory.ac.uk/camera-feeds/NC_B1318B1/20200324/182942.jpg", "ts": "2020-03-24 18:29:42"}, {"counts": "{"car": {"count": 1}}", "camera": "NC_B1318B1:V02", "url": "https://file.newcastle.urbanobservatory.ac.uk/camera-feeds/NC_B1318B1/20200324/183149.jpg", "ts": "2020-03-24 18:31:49"}]`\
 \
-Note that in response camera name has view name appended after `:`, this information comes from 
+Note that in response camera name has view name appended after `:`, this information comes from `api.newcastle.urbanobservatory.ac.uk/stream` provided by a separate app (image clustering) https://github.com/urbanobservatory/uo-cam2views
+
 
 #### Object Detection Model
 The model included in `/app/` folder is FRCNN 640x480 trained on PitchIn Rebuscov dataset (collection of ~10K traffic CCTV images), publicly available soon...

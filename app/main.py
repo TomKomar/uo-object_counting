@@ -18,7 +18,12 @@ W = int(os.environ['W'])
 H = int(os.environ['H'])
 
 app = Flask(__name__)
-db = "cctv_counts.db"
+
+if os.environ['DB'] != 'none':
+    db = os.environ['DB']
+else:
+    db = 'cctv_counts_json.db'
+
 detector = Detector(model_path=model_path, labels_path=labels_path, memory=gpu_memory, H=H, W=W, minimum_confidence=min_conf)
 
 @app.route('/isAlive')
@@ -26,31 +31,33 @@ def index():
     return "true"
 
 
-@app.route('/get_counts', methods=['GET'])
+@app.route('/db/api/v1.0/get_counts', methods=['GET'])
 def getCounts():
     camera = request.args.get('camera')
     minutes = request.args.get('minutes')
+
     con = sqlite3.connect(db)
     c = con.cursor()
+
     dt = datetime.datetime.now() - datetime.timedelta(minutes=int(minutes))
 
     if camera == '0':
-        c.execute("SELECT camera, url, ts, vehs, cyc, ped FROM cctv_counts WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
+        c.execute("SELECT camera, url, ts, counts FROM cctv_counts_json WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
         recs = c.fetchall()
     else:
-        c.execute("SELECT camera, url, ts, vehs, cyc, ped FROM cctv_counts WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
+        c.execute("SELECT camera, url, ts, counts FROM cctv_counts_json WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
         recs = c.fetchall()
     c.close()
     if con:
         con.close()
 
-    dicts = [{'camera': cam, 'url': url, 'ts': ts, 'veh': veh, 'cyc': cyc, 'ped': ped} for
-             cam, url, ts, veh, cyc, ped in recs]
+    dicts = [{'camera': cam, 'url': url, 'ts': ts, 'counts': counts} for
+             cam, url, ts, counts in recs]
 
     return str(dicts).replace("'", '"')
 
 
-@app.route('/detection/api/v1.0/count_vehicles', methods=['GET'])
+@app.route('/detection/api/v1.0/count_objects', methods=['GET'])
 def get_prediction():
     img_url = request.args.get('img_url')
     resp = urllib.request.urlopen(img_url)

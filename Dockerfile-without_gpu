@@ -20,6 +20,8 @@ RUN cd /tensorflow/models/research \
 RUN pip3 install -r /app/requirements-no_gpu.txt
 ENV PYTHONPATH=$PYTHONPATH:/tensorflow/models:/tensorflow/models/slim
 ENV ENVIRONMENT production
+ENV PYTHONPATH /tensorflow/models/research:/tensorflow/models/research/slim
+ENV DB none
 
 RUN apt-get install -y supervisor # Installing supervisord
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf

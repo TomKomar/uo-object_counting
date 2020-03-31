@@ -6,6 +6,7 @@ import urllib.request
 import numpy as np
 import datetime
 import sqlite3
+import json
 import cv2
 import os
 
@@ -50,7 +51,7 @@ def getCounts():
     if con:
         con.close()
 
-    dicts = [{'camera': cam, 'url': url, 'ts': ts, 'counts': counts} for
+    dicts = [{'camera': cam, 'url': url, 'ts': ts, 'counts': json.loads(counts)} for
              cam, url, ts, counts in recs]
 
     return str(dicts).replace("'", '"')

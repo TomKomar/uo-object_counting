@@ -26,7 +26,7 @@ async def wsListener():
                     if "broker" in brokerage:
                         broker = brokerage['broker']
                         if broker['id'] == "UTMC Open Camera Feeds":
-                            camera = (brokerage['id'])
+                            camera = (brokerage['id'].split(':')[0])  # some camera name contains synthetic view name which sometimes is wrong so we get rid of that
                             timestamp = data['timeseries']['value']['time']
                             url = data['timeseries']['value']['data']
                             url = url.replace('public', uo_url)
@@ -66,7 +66,7 @@ class CarCountingAPI(threading.Thread):
         if os.environ['ENVIRONMENT'] == 'local':
             port = 5000
 
-        counting_api = 'http://127.0.0.1:{}/detection/api/v1.0/count_objects'.format(port)
+        counting_api = 'http://172.17.0.7:{}/detection/api/v1.0/count_objects'.format(port)
         while True:
             # await asyncio.sleep(0.1)
             time.sleep(0.01)
@@ -75,17 +75,17 @@ class CarCountingAPI(threading.Thread):
                 url = ask['url']
                 PARAMS = {'img_url': url}
                 r = requests.get(url=counting_api, params=PARAMS)
-                # resp = r.text.replace("'", '"')
-                resp = json.dumps(r)
+                resp = r.text
 
                 dt = ask['url'].split('/')[-2:]
                 d, t = dt
                 dt = datetime.datetime(int(d[:4]), int(d[4:6]), int(d[6:8]), int(t[:2]), int(t[2:4]), int(t[4:6]))
 
                 data_tuple = [ask['camera'], ask['url'], str(dt), resp]
+                print(data_tuple)
                 cursor.execute(sqlite_insert_with_param, data_tuple)
-                conn.commit()
-
+                scs = conn.commit()
+                print(scs)
 
 url_queue = queue.Queue(1000)
 started = datetime.datetime.now()

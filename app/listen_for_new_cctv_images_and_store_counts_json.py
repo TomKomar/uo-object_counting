@@ -1,14 +1,13 @@
-import os
-import time
-import datetime
 import websockets
-import requests
-# import asyncio
-import queue
-import json
 import threading
+import requests
+import datetime
 import asyncio
 import sqlite3
+import queue
+import json
+import time
+import os
 
 
 async def wsListener():
@@ -76,13 +75,14 @@ class CarCountingAPI(threading.Thread):
                 url = ask['url']
                 PARAMS = {'img_url': url}
                 r = requests.get(url=counting_api, params=PARAMS)
-                resp = r.text.replace("'", '"')
+                # resp = r.text.replace("'", '"')
+                resp = json.dumps(r)
 
                 dt = ask['url'].split('/')[-2:]
                 d, t = dt
                 dt = datetime.datetime(int(d[:4]), int(d[4:6]), int(d[6:8]), int(t[:2]), int(t[2:4]), int(t[4:6]))
 
-                data_tuple = [ask['camera'], ask['url'], str(dt), resp]
+                data_tuple = [ask['camera'], ask['url'], str(dt), r]
                 cursor.execute(sqlite_insert_with_param, data_tuple)
                 conn.commit()
 

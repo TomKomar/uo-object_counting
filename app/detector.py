@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/cmore/tensorflow/models/research')
-sys.path.append('/cmore//tensorflow/models/research/slim')
 from object_detection.utils import label_map_util
 import tensorflow as tf
 import numpy as np

@@ -1,12 +1,11 @@
 # based on python-flask-docker-sklearn-template
 from detector import Detector
-from flask import Flask
 from flask import request
+from flask import Flask
 import urllib.request
 import numpy as np
 import datetime
 import sqlite3
-import json
 import cv2
 import os
 

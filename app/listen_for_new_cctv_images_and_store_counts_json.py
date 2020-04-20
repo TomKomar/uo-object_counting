@@ -21,16 +21,17 @@ async def wsListener():
             msg = json.loads(msg)
             if "data" in msg:
                 data = msg['data']
+                print(data)
                 if "brokerage" in data:
                     brokerage = data['brokerage']
                     if "broker" in brokerage:
                         broker = brokerage['broker']
                         if broker['id'] == "UTMC Open Camera Feeds":
-                            camera = (brokerage['id'].split(':')[0])  # some camera name contains synthetic view name which sometimes is wrong so we get rid of that
-                            timestamp = data['timeseries']['value']['time']
+                            location = (brokerage['id'].split(':')[0])  # some camera name contains synthetic view name which sometimes is wrong so we get rid of that
+                            dt = data['timeseries']['value']['time']
                             url = data['timeseries']['value']['data']
                             url = url.replace('public', uo_url)
-                            url_queue.put({'camera': camera, 'timestamp': timestamp, 'url': url})
+                            url_queue.put({'location': location, 'datetime': dt, 'url': url})
 
 
 class CarCountingAPI(threading.Thread):
@@ -50,11 +51,11 @@ class CarCountingAPI(threading.Thread):
         table_exists = len(recs)
         # create a table
         if table_exists == 0:
-            cursor.execute("""CREATE TABLE cctv_counts
-                              (camera text, url text, ts timestamp, counts json)
+            cursor.execute("""CREATE TABLE stills_counts
+                              (location text, url text, datetime timestamp, counts json)
                            """)
         sqlite_insert_with_param = """INSERT INTO 'stills_counts'
-                          ('camera', 'url', 'ts', 'counts') 
+                          ('location', 'url', 'datetime', 'counts') 
                           VALUES (?, ?, ?, ?);"""
 
         port = 80
@@ -63,7 +64,7 @@ class CarCountingAPI(threading.Thread):
         if os.environ['ENVIRONMENT'] == 'local':
             port = 5000
 
-        counting_api = 'http://172.0.0.1:{}/detection/api/v1.0/count_objects'.format(port)
+        counting_api = 'http://172.17.0.3:{}/detection/api/v1.0/count_objects'.format(port)
         while True:
             # await asyncio.sleep(0.1)
             time.sleep(0.01)

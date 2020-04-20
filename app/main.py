@@ -39,10 +39,10 @@ def getCounts():
     dt = datetime.datetime.now() - datetime.timedelta(minutes=int(minutes))
 
     if camera == '0':
-        c.execute("SELECT camera, url, ts, counts FROM stills_counts WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
+        c.execute("SELECT location, url, datetime, counts FROM stills_counts WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
         recs = c.fetchall()
     else:
-        c.execute("SELECT camera, url, ts, counts FROM stills_counts WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
+        c.execute("SELECT location, url, datetime, counts FROM stills_counts WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
         recs = c.fetchall()
     c.close()
     if con:

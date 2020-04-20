@@ -19,10 +19,7 @@ H = int(os.environ['H'])
 
 app = Flask(__name__)
 
-if os.environ['DB'] != 'none':
-    db = os.environ['DB']
-else:
-    db = 'cctv_counts_json.db'
+db = os.environ['DB']
 
 detector = Detector(model_path=model_path, labels_path=labels_path, memory=gpu_memory, H=H, W=W, minimum_confidence=min_conf)
 
@@ -42,10 +39,10 @@ def getCounts():
     dt = datetime.datetime.now() - datetime.timedelta(minutes=int(minutes))
 
     if camera == '0':
-        c.execute("SELECT camera, url, ts, counts FROM cctv_counts_json WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
+        c.execute("SELECT camera, url, ts, counts FROM stills_counts WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
         recs = c.fetchall()
     else:
-        c.execute("SELECT camera, url, ts, counts FROM cctv_counts_json WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
+        c.execute("SELECT camera, url, ts, counts FROM stills_counts WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
         recs = c.fetchall()
     c.close()
     if con:

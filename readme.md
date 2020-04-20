@@ -23,7 +23,7 @@ without GPU \
 
 running with GPU requires nvidia-docker rather than regular docker (setting runtime depends on nvidia-docker version, either `"--runtime=nvidia"` or `"--gpus all"`)
 
-`docker run -d --runtime=nvidia --rm -v /folder/to/store/sqlite/filedatabase:/some/place -e DB='/some/place/cctv_counts.db' -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-1.pb' -e LABELS='rebuscov-classes-1.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_gpu`
+`docker run -d --runtime=nvidia --network="host" --rm -v /folder/to/store/sqlite/filedatabase:/some/place -e DB='/some/place/cctv_counts.db' -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-1.pb' -e LABELS='rebuscov-classes-1.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_gpu`
 
 Parameters and environmental variables:\
 - Use a mounted volume `-v` to assure data persistance

@@ -40,23 +40,20 @@ class CarCountingAPI(threading.Thread):
     def run(self):
         global url_queue
 
-        if os.environ['DB'] != 'none':
-            db = os.environ['DB']
-        else:
-            db = 'cctv_counts_json.db'
+        db = os.environ['DB']
 
         conn = sqlite3.connect(db)  # or use :memory: to put it in RAM
         cursor = conn.cursor()
-        check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='cctv_counts_json';"
+        check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
         cursor.execute(check_if_table_exists)
         recs = cursor.fetchall()
         table_exists = len(recs)
         # create a table
         if table_exists == 0:
-            cursor.execute("""CREATE TABLE cctv_counts_json
+            cursor.execute("""CREATE TABLE cctv_counts
                               (camera text, url text, ts timestamp, counts json)
                            """)
-        sqlite_insert_with_param = """INSERT INTO 'cctv_counts_json'
+        sqlite_insert_with_param = """INSERT INTO 'stills_counts'
                           ('camera', 'url', 'ts', 'counts') 
                           VALUES (?, ?, ?, ?);"""
 
@@ -66,7 +63,7 @@ class CarCountingAPI(threading.Thread):
         if os.environ['ENVIRONMENT'] == 'local':
             port = 5000
 
-        counting_api = 'http://172.17.0.7:{}/detection/api/v1.0/count_objects'.format(port)
+        counting_api = 'http://172.0.0.1:{}/detection/api/v1.0/count_objects'.format(port)
         while True:
             # await asyncio.sleep(0.1)
             time.sleep(0.01)

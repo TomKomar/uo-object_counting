@@ -22,7 +22,9 @@ ENV PYTHONPATH=$PYTHONPATH:/tensorflow/models:/tensorflow/models/slim
 ENV ENVIRONMENT production
 ENV PYTHONPATH /tensorflow/models/research:/tensorflow/models/research/slim
 
-RUN apt-get install -y supervisor # Installing supervisord
+
+RUN apt-get update \
+    && apt-get install -y supervisor # Installing supervisord
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 ENTRYPOINT ["/usr/bin/supervisord"]

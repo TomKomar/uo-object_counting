@@ -6,3 +6,4 @@ opencv-python-headless
 tensorflow-gpu==1.13.1
 websockets
 requests
+psycopg2-binary==2.8.5

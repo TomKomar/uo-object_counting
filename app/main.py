@@ -5,7 +5,7 @@ from flask import Flask
 import urllib.request
 import numpy as np
 import datetime
-import sqlite3
+import psycopg2
 import json
 import cv2
 import os
@@ -19,7 +19,11 @@ H = int(os.environ['H'])
 
 app = Flask(__name__)
 
-db = os.environ['DB']
+DB_NAME = os.environ['DB_NAME']
+DB_USER = os.environ['DB_USER']
+DB_PASS = os.environ['DB_PASS']
+DB_DOMAIN = os.environ['DB_DOMAIN']
+DB_PORT = os.environ['DB_PORT']
 
 detector = Detector(model_path=model_path, labels_path=labels_path, memory=gpu_memory, H=H, W=W, minimum_confidence=min_conf)
 
@@ -33,7 +37,7 @@ def getCounts():
     camera = request.args.get('camera')
     minutes = request.args.get('minutes')
 
-    con = sqlite3.connect(db)
+    con = psycopg2.connect(host=DB_DOMAIN, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME)
     c = con.cursor()
 
     dt = datetime.datetime.now() - datetime.timedelta(minutes=int(minutes))

@@ -53,9 +53,7 @@ class CarCountingAPI(threading.Thread):
         # create a table
         if table_exists == 0:
             cursor.execute("""CREATE TABLE stills_counts(location text, url text, datetime timestamp, counts json)""")
-        sqlite_insert_with_param = """INSERT INTO 'stills_counts'
-                          ('location', 'url', 'datetime', 'counts') 
-                          VALUES (?, ?, ?, ?);"""
+        sqlite_insert_with_param = """INSERT INTO 'stills_counts' ('location', 'url', 'datetime', 'counts') VALUES (?, ?, ?, ?);"""
 
         port = 80
         if os.environ['ENVIRONMENT'] == 'production':

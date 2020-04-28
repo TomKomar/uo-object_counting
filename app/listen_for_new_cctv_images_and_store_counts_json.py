@@ -1,6 +1,7 @@
 import websockets
 import threading
 import requests
+import psycopg2
 import datetime
 import asyncio
 import sqlite3
@@ -43,7 +44,7 @@ class CarCountingAPI(threading.Thread):
 
         db = os.environ['DB']
 
-        conn = sqlite3.connect(db)  # or use :memory: to put it in RAM
+        conn = psycopg2.connect(db)  # or use :memory: to put it in RAM
         cursor = conn.cursor()
         check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
         cursor.execute(check_if_table_exists)
@@ -51,9 +52,7 @@ class CarCountingAPI(threading.Thread):
         table_exists = len(recs)
         # create a table
         if table_exists == 0:
-            cursor.execute("""CREATE TABLE stills_counts
-                              (location text, url text, datetime timestamp, counts json)
-                           """)
+            cursor.execute("""CREATE TABLE stills_counts(location text, url text, datetime timestamp, counts json)""")
         sqlite_insert_with_param = """INSERT INTO 'stills_counts'
                           ('location', 'url', 'datetime', 'counts') 
                           VALUES (?, ?, ?, ?);"""

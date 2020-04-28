@@ -84,7 +84,7 @@ class CarCountingAPI(threading.Thread):
                     d, t = dt
                     dt = datetime.datetime(int(d[:4]), int(d[4:6]), int(d[6:8]), int(t[:2]), int(t[2:4]), int(t[4:6]))
                     print('ask', ask)
-                    data_tuple = [ask['camera'], ask['url'], str(dt), resp]
+                    data_tuple = [ask['location'], ask['url'], str(dt), resp]
                     # print(data_tuple)
                     cursor.execute(sqlite_insert_with_param, data_tuple)
                     scs = conn.commit()

@@ -41,7 +41,7 @@ class CarCountingAPI(threading.Thread):
 
     def run(self):
         global url_queue
-        # db = os.environ['DB']
+        db = os.environ['DB']
         DB_NAME = os.environ['DB_NAME']
         DB_USER = os.environ['DB_USER']
         DB_PASS = os.environ['DB_PASS']

@@ -32,30 +32,30 @@ def index():
     return "true"
 
 
-@app.route('/db/api/v1.0/get_counts', methods=['GET'])
-def getCounts():
-    camera = request.args.get('camera')
-    minutes = request.args.get('minutes')
-
-    con = psycopg2.connect(host=DB_DOMAIN, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME)
-    c = con.cursor()
-
-    dt = datetime.datetime.now() - datetime.timedelta(minutes=int(minutes))
-
-    if camera == '0':
-        c.execute("SELECT location, url, datetime, counts FROM stills_counts WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
-        recs = c.fetchall()
-    else:
-        c.execute("SELECT location, url, datetime, counts FROM stills_counts WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
-        recs = c.fetchall()
-    c.close()
-    if con:
-        con.close()
-
-    dicts = [{'camera': cam, 'url': url, 'ts': ts, 'counts': json.loads(counts)} for
-             cam, url, ts, counts in recs]
-
-    return str(dicts).replace("'", '"')
+# @app.route('/db/api/v1.0/get_counts', methods=['GET'])
+# def getCounts():
+#     camera = request.args.get('camera')
+#     minutes = request.args.get('minutes')
+#
+#     con = psycopg2.connect(host=DB_DOMAIN, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME)
+#     c = con.cursor()
+#
+#     dt = datetime.datetime.now() - datetime.timedelta(minutes=int(minutes))
+#
+#     if camera == '0':
+#         c.execute("SELECT location, url, datetime, counts FROM stills_counts WHERE ts BETWEEN '{}' AND '{}'".format(dt, datetime.datetime.now()))
+#         recs = c.fetchall()
+#     else:
+#         c.execute("SELECT location, url, datetime, counts FROM stills_counts WHERE camera LIKE '%{}%' AND (ts BETWEEN '{}' AND '{}')".format(camera, dt, datetime.datetime.now()))
+#         recs = c.fetchall()
+#     c.close()
+#     if con:
+#         con.close()
+#
+#     dicts = [{'camera': cam, 'url': url, 'ts': ts, 'counts': json.loads(counts)} for
+#              cam, url, ts, counts in recs]
+#
+#     return str(dicts).replace("'", '"')
 
 
 @app.route('/detection/api/v1.0/count_objects', methods=['GET'])

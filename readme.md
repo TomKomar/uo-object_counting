@@ -19,11 +19,11 @@ build for use with or without GPU \
 
 #### Starting
 without GPU \
-`docker run -d --rm -v /folder/to/store/sqlite/filedatabase:/some/place --network="host" -e DB='/some/place/cctv_counts.db' -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-3.pb' -e LABELS='rebuscov-classes-3.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_nogpu`
+`docker run -d --rm -v /folder/to/store/sqlite/filedatabase:/some/place e DB='/some/place/cctv_counts.db' -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-3.pb' -e LABELS='rebuscov-classes-3.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_nogpu`
 
 running with GPU requires nvidia-docker rather than regular docker (setting runtime depends on nvidia-docker version, either `"--runtime=nvidia"` or `"--gpus all"`)
 
-`docker run -d --gpus all --rm -v /home/ntk38/video_counts:/video_counts --network="host" -e DB_NAME=uo-vision-1 DB_USER=user DB_PASS=pass DB_DOMAIN=www.database.com DB_PORT=000 -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-3.pb' -e LABELS='rebuscov-classes-3.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_gpu`
+`docker run -d --gpus all --rm -v /home/ntk38/video_counts:/video_counts -e DB_NAME=uo-vision-1 DB_USER=user DB_PASS=pass DB_DOMAIN=www.database.com DB_PORT=000 -e ENVIRONMENT='production' -e MODEL='fig_frcnn_rebuscov-3.pb' -e LABELS='rebuscov-classes-3.pbtxt' -e GPU_MEMORY=1 -e MIN_CONF=0.33 -e W=640 -e H=480 -p 6001:80 tflsk_gpu`
 
 Parameters and environmental variables:\
 - Use a mounted volume `-v` to assure data persistance

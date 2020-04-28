@@ -22,7 +22,7 @@ async def wsListener():
             msg = json.loads(msg)
             if "data" in msg:
                 data = msg['data']
-                print(data)
+                # print(data)
                 if "brokerage" in data:
                     brokerage = data['brokerage']
                     if "broker" in brokerage:

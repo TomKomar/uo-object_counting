@@ -41,7 +41,7 @@ class CarCountingAPI(threading.Thread):
 
     def run(self):
         global url_queue
-        db = os.environ['DB']
+        # db = os.environ['DB']
         DB_NAME = os.environ['DB_NAME']
         DB_USER = os.environ['DB_USER']
         DB_PASS = os.environ['DB_PASS']
@@ -51,6 +51,7 @@ class CarCountingAPI(threading.Thread):
         # conn = sqlite3.connect(db)
         conn = psycopg2.connect(host=DB_DOMAIN, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME)
         cursor = conn.cursor()
+        print(conn, cursor)
         # check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
         # cursor.execute(check_if_table_exists)
         # recs = cursor.fetchall()
@@ -72,21 +73,25 @@ class CarCountingAPI(threading.Thread):
             # await asyncio.sleep(0.1)
             time.sleep(0.01)
             if not url_queue.empty():
-                ask = url_queue.get()
-                url = ask['url']
-                PARAMS = {'img_url': url}
-                r = requests.get(url=counting_api, params=PARAMS)
-                resp = r.text
+                try:
+                    ask = url_queue.get()
+                    url = ask['url']
+                    PARAMS = {'img_url': url}
+                    r = requests.get(url=counting_api, params=PARAMS)
+                    resp = r.text
 
-                dt = ask['url'].split('/')[-2:]
-                d, t = dt
-                dt = datetime.datetime(int(d[:4]), int(d[4:6]), int(d[6:8]), int(t[:2]), int(t[2:4]), int(t[4:6]))
-                print('ask', ask)
-                data_tuple = [ask['camera'], ask['url'], str(dt), resp]
-                # print(data_tuple)
-                cursor.execute(sqlite_insert_with_param, data_tuple)
-                scs = conn.commit()
-                print(scs)
+                    dt = ask['url'].split('/')[-2:]
+                    d, t = dt
+                    dt = datetime.datetime(int(d[:4]), int(d[4:6]), int(d[6:8]), int(t[:2]), int(t[2:4]), int(t[4:6]))
+                    # print('ask', ask)
+                    data_tuple = [ask['camera'], ask['url'], str(dt), resp]
+                    # print(data_tuple)
+                    cursor.execute(sqlite_insert_with_param, data_tuple)
+                    scs = conn.commit()
+                    print('cursor', cursor, 'conn', conn, 'scs', scs)
+
+                except:
+                    pass
 
 url_queue = queue.Queue(1000)
 started = datetime.datetime.now()

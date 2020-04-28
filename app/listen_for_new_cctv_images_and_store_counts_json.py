@@ -50,13 +50,13 @@ class CarCountingAPI(threading.Thread):
 
         conn = psycopg2.connect(host=DB_DOMAIN, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME)
         cursor = conn.cursor()
-        check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
-        cursor.execute(check_if_table_exists)
-        recs = cursor.fetchall()
-        table_exists = len(recs)
+        # check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
+        # cursor.execute(check_if_table_exists)
+        # recs = cursor.fetchall()
+        # table_exists = len(recs)
         # create a table
-        if table_exists == 0:
-            cursor.execute("""CREATE TABLE stills_counts(location text, url text, datetime timestamp, counts json)""")
+        # if table_exists == 0:
+        #     cursor.execute("""CREATE TABLE stills_counts(location text, url text, datetime timestamp, counts json)""")
         sqlite_insert_with_param = """INSERT INTO 'stills_counts' ('location', 'url', 'datetime', 'counts') VALUES (%s, %s, %s, %s);"""
 
         port = 80

@@ -90,7 +90,8 @@ class CarCountingAPI(threading.Thread):
                     scs = conn.commit()
                     print('cursor', cursor, 'conn', conn, 'scs', scs)
 
-                except:
+                except Exception as e:
+                    print(e)
                     pass
 
 url_queue = queue.Queue(1000)

@@ -42,9 +42,13 @@ class CarCountingAPI(threading.Thread):
     def run(self):
         global url_queue
 
-        db = os.environ['DB']
+        DB_NAME = os.environ['DB_NAME']
+        DB_USER = os.environ['DB_USER']
+        DB_PASS = os.environ['DB_PASS']
+        DB_DOMAIN = os.environ['DB_DOMAIN']
+        DB_PORT = os.environ['DB_PORT']
 
-        conn = psycopg2.connect(db)  # or use :memory: to put it in RAM
+        conn = psycopg2.connect(host=DB_DOMAIN, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME)
         cursor = conn.cursor()
         check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
         cursor.execute(check_if_table_exists)

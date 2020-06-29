@@ -15,7 +15,7 @@ RUN /app/latest_protobuf.sh
 RUN cd /tensorflow/models/research \
     && protoc object_detection/protos/*.proto --python_out=. \
     && python3 setup.py sdist \
-   && (cd slim && python3 setup.py sdist)
+    && (cd slim && python3 setup.py sdist)
 
 RUN pip3 install -r /app/requirements-gpu.txt
 ENV PYTHONPATH=$PYTHONPATH:/tensorflow/models:/tensorflow/models/slim

@@ -27,9 +27,9 @@ DB_PORT = os.environ['DB_PORT']
 
 detector = Detector(model_path=model_path, labels_path=labels_path, memory=gpu_memory, H=H, W=W, minimum_confidence=min_conf)
 
-@app.route('/isAlive')
-def index():
-    return "true"
+# @app.route('/isAlive')
+# def index():
+#     return "true"
 
 
 # @app.route('/db/api/v1.0/get_counts', methods=['GET'])
@@ -61,8 +61,11 @@ def index():
 @app.route('/detection/api/v1.0/count_objects', methods=['GET'])
 def get_prediction():
     img_url = request.args.get('img_url')
+    print(img_url)
     resp = urllib.request.urlopen(img_url)
+    print("resp")
     img = np.asarray(bytearray(resp.read()), dtype="uint8")
+    print("img")
     img = cv2.imdecode(img, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (W, H))

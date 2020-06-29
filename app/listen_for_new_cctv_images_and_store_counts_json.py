@@ -28,6 +28,7 @@ async def wsListener():
                     if "broker" in brokerage:
                         broker = brokerage['broker']
                         if broker['id'] == "UTMC Open Camera Feeds":
+                            # print(msg)
                             location = (brokerage['id'].split(':')[0])  # some camera name contains synthetic view name which sometimes is wrong so we get rid of that
                             dt = data['timeseries']['value']['time']
                             url = data['timeseries']['value']['data']
@@ -47,11 +48,12 @@ class CarCountingAPI(threading.Thread):
         DB_PASS = os.environ['DB_PASS']
         DB_DOMAIN = os.environ['DB_DOMAIN']
         DB_PORT = os.environ['DB_PORT']
+        IP = os.environ['IP']
 
         # conn = sqlite3.connect(db)
         conn = psycopg2.connect(host=DB_DOMAIN, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME)
         cursor = conn.cursor()
-        print(conn, cursor)
+        # print(conn, cursor)
         # check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
         # cursor.execute(check_if_table_exists)
         # recs = cursor.fetchall()
@@ -68,7 +70,7 @@ class CarCountingAPI(threading.Thread):
         if os.environ['ENVIRONMENT'] == 'local':
             port = 5000
 
-        counting_api = 'http://172.17.0.3:{}/detection/api/v1.0/count_objects'.format(port)
+        counting_api = 'http://{}:{}/detection/api/v1.0/count_objects'.format(IP, port)
         while True:
             # await asyncio.sleep(0.1)
             time.sleep(0.01)
@@ -84,11 +86,11 @@ class CarCountingAPI(threading.Thread):
                     d, t = dt
                     dt = datetime.datetime(int(d[:4]), int(d[4:6]), int(d[6:8]), int(t[:2]), int(t[2:4]), int(t[4:6]))
                     print('ask', ask)
+                    print('resp', resp)
                     data_tuple = [ask['location'], ask['url'], str(dt), resp]
                     # print(data_tuple)
                     cursor.execute(sqlite_insert_with_param, data_tuple)
-                    scs = conn.commit()
-                    print('cursor', cursor, 'conn', conn, 'scs', scs)
+                    conn.commit()
 
                 except Exception as e:
                     print(e)

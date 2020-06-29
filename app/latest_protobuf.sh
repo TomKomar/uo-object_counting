@@ -3,8 +3,8 @@
 TEMP_DIR=/tmp
 
 
-VERSION=`curl --silent "https://api.github.com/repos/protocolbuffers/protobuf/releases/latest" | grep -Po '"tag_name": "v\K.*?(?=")'`
-
+# VERSION=`curl --silent "https://api.github.com/repos/protocolbuffers/protobuf/releases/latest" | grep -Po '"tag_name": "v\K.*?(?=")'`
+VERSION="3.11.4"
 [[ -z VERSION ]] && echo "Could not get version from github"
 
 mkdir $TEMP_DIR/protoc_inst

@@ -3,7 +3,7 @@ scipy==0.19.1
 Flask==1.0.0
 scikit_learn==0.18.2
 opencv-python-headless
-tensorflow-gpu==1.13.1
+tensorflow-gpu==1.15.2
 websockets
 requests==2.23.0
 psycopg2-binary==2.8.5

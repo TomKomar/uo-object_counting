@@ -80,9 +80,7 @@ class Counting(threading.Thread):
         conn = psycopg2.connect(host=DB_DOMAIN, port=DB_PORT, user=DB_USER, password=DB_PASS, database=DB_NAME)
         cursor = conn.cursor()
         sqlite_insert_counts_with_param = "INSERT INTO stills_counts VALUES (%s, %s, %s, %s);"
-        sqlite_insert_counts_and_dets_with_param_dets = """INSERT INTO stills_counts_dets
-                          ('location', 'url', 'datetime', 'counts', 'dets') 
-                          VALUES (?, ?, ?, ?, ?);"""
+        sqlite_insert_counts_and_dets_with_param_dets = """INSERT INTO stills_counts_dets VALUES (?, ?, ?, ?, ?);"""
 
         # check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
         # cursor.execute(check_if_table_exists)

@@ -36,6 +36,7 @@ DB_DOMAIN = os.environ['DB_DOMAIN']
 DB_PORT = os.environ['DB_PORT']
 
 detector = Detector(model_path=model_path, labels_path=labels_path, memory=gpu_memory, H=H, W=W, minimum_confidence=min_conf)
+print('detector created', detector)
 
 async def wsListener():
     global url_queue

@@ -19,21 +19,21 @@ RUN cd /tensorflow/models/research \
 
 RUN pip3 install -r /app/requirements-gpu.txt
 ENV ENVIRONMENT production
-ENV PYTHONPATH=/tensorflow/models/research:/tensorflow/models/research/slim
-ENV DB_NAME=uo-vision-1
-ENV DB_USER=uo
-ENV DB_PASS=vision
-ENV DB_DOMAIN=database.urbanobservatory.ac.uk
-ENV DB_PORT=5234
-ENV ENVIRONMENT='production'
-ENV MODEL='fig_frcnn_rebuscov-3.pb'
-ENV LABELS ='rebuscov-classes-3.pbtxt'
-ENV GPU_MEMORY=0.25
-ENV MIN_CONF=0.25
-ENV W=640
-ENV H=480
-ENV CUDA_VISIBLE_DEVICES=1
-ENV IP=0
+ENV PYTHONPATH /tensorflow/models/research:/tensorflow/models/research/slim
+ENV DB_NAME uo-vision-1
+ENV DB_USER uo
+ENV DB_PASS vision
+ENV DB_DOMAIN database.urbanobservatory.ac.uk
+ENV DB_PORT 5234
+ENV ENVIRONMENT 'production'
+ENV MODEL 'fig_frcnn_rebuscov-3.pb'
+ENV LABELS  'rebuscov-classes-3.pbtxt'
+ENV GPU_MEMORY 0.25
+ENV MIN_CONF 0.25
+ENV W 640
+ENV H 480
+ENV CUDA_VISIBLE_DEVICES 1
+ENV IP 0
 
 
 RUN apt-get update \

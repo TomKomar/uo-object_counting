@@ -1,4 +1,5 @@
 # based on python-flask-docker-sklearn-template
+from classify_view import classify_view
 from detector import Detector
 # from flask import request
 # from flask import Flask
@@ -124,6 +125,7 @@ def clustering(url, img):
     tm = url.split[-1].split('.')[0]
     model_name = 'clusterimages-'+cam+'.model'
     model_path = os.path.join(os.environ['STORAGE'], 'models', model_name)
+    classify_view(model_path, img)
 
 def get_prediction(img):
     detections = detector.detect(img)

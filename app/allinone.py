@@ -83,53 +83,49 @@ class Counting(threading.Thread):
         sqlite_insert_counts_with_param = "INSERT INTO stills_counts VALUES (%s, %s, %s, %s);"
         sqlite_insert_counts_and_dets_with_param_dets = """INSERT INTO stills_counts_dets VALUES (%s, %s, %s, %s, %s);"""
 
-        # check_if_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts';"
-        # cursor.execute(check_if_table_exists)
-        # recs = cursor.fetchall()
-        # table_exists = len(recs)
-        # # create a table
-        # if table_exists == 0:
-        #     cursor.execute("""CREATE TABLE stills_counts
-        #                       (location text, url text, datetime timestamp, counts json)
-        #                    """)
-        #
-        # check_if_dets_table_exists = "SELECT name FROM sqlite_master WHERE type='table' AND name='stills_counts_dets';"
-        # cursor.execute(check_if_dets_table_exists)
-        # recs = cursor.fetchall()
-        # table_exists = len(recs)
-        # # create a table
-        # if table_exists == 0:
-        #     cursor.execute("""CREATE TABLE stills_counts_dets
-        #                       (location text, url text, datetime timestamp, counts json, dets json)
-        #                    """)
-
         while True:
-            # await asyncio.sleep(0.1)
-            time.sleep(0.01)
-            if not url_queue.empty():
-                msg = url_queue.get()
-                loc, dt, url = msg['location'], msg['datetime'], msg['url']
-                counts, dets = get_prediction(url)
-                print(counts, dets)
-                counts = str(counts).replace("'", '"')
-                dets = str(dets).replace("'", '"')
+            try:
+                while True:
+                    time.sleep(0.01)
+                    if not url_queue.empty():
+                        msg = url_queue.get()
+                        loc, dt, url = msg['location'], msg['datetime'], msg['url']
 
-                data_tuple = [loc, url, str(dt), counts]
-                print('data tuple', data_tuple)
-                cursor.execute(sqlite_insert_counts_with_param, data_tuple)
-                conn.commit()
+                        resp = urllib.request.urlopen(url)
+                        img = np.asarray(bytearray(resp.read()), dtype="uint8")
+                        img = cv2.imdecode(img, cv2.IMREAD_COLOR)
+                        img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2RGB)
+                        img = cv2.resize(img, (W, H))
 
-                data_tuple2 = [loc, url, str(dt), counts, dets]
-                print('tuple2',data_tuple2)
-                cursor.execute(sqlite_insert_counts_and_dets_with_param_dets, data_tuple2)
-                conn.commit()
+                        counts, dets = get_prediction(img)
+                        cluster = clustering(url, img)
+                        print(counts, dets)
+                        counts = str(counts).replace("'", '"')
+                        dets = str(dets).replace("'", '"')
 
-def get_prediction(img_url):
-    resp = urllib.request.urlopen(img_url)
-    img = np.asarray(bytearray(resp.read()), dtype="uint8")
-    img = cv2.imdecode(img, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (W, H))
+                        data_tuple = [loc, url, str(dt), counts]
+                        print('data tuple', data_tuple)
+                        cursor.execute(sqlite_insert_counts_with_param, data_tuple)
+                        conn.commit()
+
+                        data_tuple2 = [loc, url, str(dt), counts, dets]
+                        print('tuple2', data_tuple2)
+                        cursor.execute(sqlite_insert_counts_and_dets_with_param_dets, data_tuple2)
+                        conn.commit()
+            except Exception as e:
+                print('[ERROR] {}'.format(e))
+                time.sleep(1)
+                pass
+
+def clustering(url, img):
+    url = url.replace('\\','/')
+    cam = url.split('/')[-3]
+    dt = url.split[-2]
+    tm = url.split[-1].split('.')[0]
+    model_name = 'clusterimages-'+cam+'.model'
+    model_path = os.path.join(os.environ['STORAGE'], 'models', model_name)
+
+def get_prediction(img):
     detections = detector.detect(img)
 
     counts = {}

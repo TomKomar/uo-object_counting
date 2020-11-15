@@ -85,7 +85,8 @@ class Counting(threading.Thread):
         sqlite_insert_counts_and_dets_with_param_dets = """INSERT INTO stills_counts_dets VALUES (%s, %s, %s, %s, %s);"""
 
         while True:
-            try:
+            #try:
+            if True:
                 while True:
                     time.sleep(0.01)
                     if not url_queue.empty():
@@ -99,10 +100,12 @@ class Counting(threading.Thread):
                         img = cv2.resize(img, (W, H))
 
                         counts, dets = get_prediction(img)
-                        try:
+                        # try:
+                        if True:
                             cluster = clustering(url, img)
-                        except:
-                            pass
+                            print('[CLUSTER]', cluster)
+                        # except:
+                        #     pass
                         print(counts, dets)
                         counts = str(counts).replace("'", '"')
                         dets = str(dets).replace("'", '"')
@@ -116,16 +119,16 @@ class Counting(threading.Thread):
                         print('tuple2', data_tuple2)
                         cursor.execute(sqlite_insert_counts_and_dets_with_param_dets, data_tuple2)
                         conn.commit()
-            except Exception as e:
-                print('[ERROR] {}'.format(e))
-                time.sleep(1)
-                pass
+            #except Exception as e:
+            #    print('[ERROR] {}'.format(e))
+            #    time.sleep(1)
+            #    pass
 
 def clustering(url, img):
     url = url.replace('\\','/')
     cam = url.split('/')[-3]
-    dt = url.split[-2]
-    tm = url.split[-1].split('.')[0]
+    # dt = url.split('/')[-2]
+    # tm = url.split('/')[-1].split('.')[0]
     model_name = 'clusterimages-'+cam+'.model'
     model_path = os.path.join('/ntk38/models', model_name)
     cluster = classify_view(model_path, img)

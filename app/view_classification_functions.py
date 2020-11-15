@@ -54,7 +54,7 @@ def remove_strange_images(folder: str, after=0, before=240000, check=True):
     return images_list
 
 
-def check_if_image_is_ok(path_to_img: str):
+def check_if_image_is_ok(path_to_img: str, image=[]):
     """
     checks if image complies with set requirements
     :param path_to_img:
@@ -62,23 +62,38 @@ def check_if_image_is_ok(path_to_img: str):
     """
     is_ok = False
     image_size = None
-    with open(path_to_img, 'rb') as f:
-        check_chars = f.read()[-2:]
-    if check_chars == b'\xff\xd9':
-        img = cv2.imread(path_to_img)
-        if img is not None:
+    if type(image) == list:
+        with open(path_to_img, 'rb') as f:
+            check_chars = f.read()[-2:]
+        if check_chars == b'\xff\xd9':
+            img = cv2.imread(path_to_img)
             img_height = img.shape[0]
             bottom_part = (int(img_height / 4) * 3)
             img_bottom = img[bottom_part:, :]
             bottom_brightness = image_brightness(img_bottom)
             full_brightness = image_brightness(img)
             # deal with grey images and 'camera-offline' images
-            if not 127.8 < bottom_brightness < 128.2 and\
+            if not 127.8 < bottom_brightness < 128.2 and \
                     not (147.5 < bottom_brightness < 149.5 and 172.5 < full_brightness < 174):
                 height = int(img.shape[0])
                 width = int(img.shape[1])
                 image_size = (path_to_img, width, height)
                 is_ok = True
+        return is_ok, image_size
+    else:
+        img = image.copy()
+        img_height = img.shape[0]
+        bottom_part = (int(img_height / 4) * 3)
+        img_bottom = img[bottom_part:, :]
+        bottom_brightness = image_brightness(img_bottom)
+        full_brightness = image_brightness(img)
+        # deal with grey images and 'camera-offline' images
+        if not 127.8 < bottom_brightness < 128.2 and\
+                not (147.5 < bottom_brightness < 149.5 and 172.5 < full_brightness < 174):
+            height = int(img.shape[0])
+            width = int(img.shape[1])
+            image_size = (path_to_img, width, height)
+            is_ok = True
     return is_ok, image_size
 
 

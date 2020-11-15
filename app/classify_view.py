@@ -70,4 +70,5 @@ def classify_view(model_path, img, json_path='blank'):
             prediction = -1
             return prediction
     except Exception as e:
+        print(e)
         return -1

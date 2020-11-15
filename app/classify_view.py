@@ -18,7 +18,8 @@ import os
 
 
 def classify_view(model_path, img, json_path='blank'):
-    try:
+    # try:
+    if True:
         model = pickle.load(open(model_path, 'rb'))
         the_camera = os.path.basename(model_path).split('.')[0]
         # make sure that image is of right size and content (e.g. not gray or erroneous
@@ -69,6 +70,6 @@ def classify_view(model_path, img, json_path='blank'):
         else:
             prediction = -1
             return prediction
-    except Exception as e:
-        print(e)
-        return -1
+    # except Exception as e:
+    #     print(e)
+    #     return -1

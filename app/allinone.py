@@ -99,7 +99,10 @@ class Counting(threading.Thread):
                         img = cv2.resize(img, (W, H))
 
                         counts, dets = get_prediction(img)
-                        cluster = clustering(url, img)
+                        try:
+                            cluster = clustering(url, img)
+                        except:
+                            pass
                         print(counts, dets)
                         counts = str(counts).replace("'", '"')
                         dets = str(dets).replace("'", '"')
@@ -124,8 +127,10 @@ def clustering(url, img):
     dt = url.split[-2]
     tm = url.split[-1].split('.')[0]
     model_name = 'clusterimages-'+cam+'.model'
-    model_path = os.path.join(os.environ['STORAGE'], 'models', model_name)
-    classify_view(model_path, img)
+    model_path = os.path.join('/ntk38/models', model_name)
+    cluster = classify_view(model_path, img)
+    print('[cluster]', cluster)
+    return cluster
 
 def get_prediction(img):
     detections = detector.detect(img)

@@ -141,7 +141,7 @@ def extract_hog(img: object, ppc=(64, 64), cpb=(4, 4), check=True):
         img = img[int(img_height/3):,:]
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     h = feature.hog(img, orientations=4, pixels_per_cell=ppc, cells_per_block=cpb, transform_sqrt=False,
-                    visualise=False, feature_vector=True)
+                    feature_vector=True)
     h = h.tolist()
     h = [int(i * 1000) for i in h]
     return h

@@ -1,5 +1,5 @@
 # based on python-flask-docker-sklearn-template
-from classify_view import classify_view
+# from classify_view import classify_view
 from detector import Detector
 # from flask import request
 # from flask import Flask
@@ -101,8 +101,8 @@ class Counting(threading.Thread):
 
                         counts, dets = get_prediction(img)
                         # try:
-                        cluster = clustering(url, img)
-                        print('[CLUSTER]', cluster)
+                        # cluster = clustering(url, img)
+                        # print('[CLUSTER]', cluster)
                         # except:
                         #     pass
                         print(counts, dets)
@@ -123,16 +123,16 @@ class Counting(threading.Thread):
                time.sleep(1)
                pass
 
-def clustering(url, img):
-    url = url.replace('\\','/')
-    cam = url.split('/')[-3]
-    # dt = url.split('/')[-2]
-    # tm = url.split('/')[-1].split('.')[0]
-    model_name = 'clusterimages-'+cam+'.model'
-    model_path = os.path.join('/ntk38/models', model_name)
-    cluster = classify_view(model_path, img)
-    print('[cluster]', cluster)
-    return cluster
+# def clustering(url, img):
+#     url = url.replace('\\','/')
+#     cam = url.split('/')[-3]
+#     # dt = url.split('/')[-2]
+#     # tm = url.split('/')[-1].split('.')[0]
+#     model_name = 'clusterimages-'+cam+'.model'
+#     model_path = os.path.join('/ntk38/models', model_name)
+#     cluster = classify_view(model_path, img)
+#     print('[cluster]', cluster)
+#     return cluster
 
 def get_prediction(img):
     detections = detector.detect(img)

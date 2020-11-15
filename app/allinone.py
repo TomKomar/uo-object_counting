@@ -85,8 +85,8 @@ class Counting(threading.Thread):
         sqlite_insert_counts_and_dets_with_param_dets = """INSERT INTO stills_counts_dets VALUES (%s, %s, %s, %s, %s);"""
 
         while True:
-            #try:
-            if True:
+            try:
+            # if True:
                 while True:
                     time.sleep(0.01)
                     if not url_queue.empty():
@@ -101,9 +101,8 @@ class Counting(threading.Thread):
 
                         counts, dets = get_prediction(img)
                         # try:
-                        if True:
-                            cluster = clustering(url, img)
-                            print('[CLUSTER]', cluster)
+                        cluster = clustering(url, img)
+                        print('[CLUSTER]', cluster)
                         # except:
                         #     pass
                         print(counts, dets)
@@ -119,10 +118,10 @@ class Counting(threading.Thread):
                         print('tuple2', data_tuple2)
                         cursor.execute(sqlite_insert_counts_and_dets_with_param_dets, data_tuple2)
                         conn.commit()
-            #except Exception as e:
-            #    print('[ERROR] {}'.format(e))
-            #    time.sleep(1)
-            #    pass
+            except Exception as e:
+               print('[ERROR] {}'.format(e))
+               time.sleep(1)
+               pass
 
 def clustering(url, img):
     url = url.replace('\\','/')

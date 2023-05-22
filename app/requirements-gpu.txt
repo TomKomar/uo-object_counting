@@ -5,5 +5,5 @@ scikit_learn==0.18.2
 opencv-python-headless==4.2.0.32
 tensorflow-gpu==1.13.1
 websockets
-requests==2.23.0
+requests==2.31.0
 psycopg2-binary==2.8.5
